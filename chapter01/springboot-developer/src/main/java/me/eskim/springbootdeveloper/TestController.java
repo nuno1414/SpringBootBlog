@@ -1,14 +1,21 @@
 package me.eskim.springbootdeveloper;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
+@RequiredArgsConstructor
 public class TestController {
 
-    @GetMapping("/test")
-    public String test() {
+    private final TestService testService;
 
-        return "Hello, world!";
+    @GetMapping("/test")
+    public List<Member> getAllMembers() {
+
+        List<Member> memberList = testService.getAllMembers();
+        return memberList;
     }
 }
