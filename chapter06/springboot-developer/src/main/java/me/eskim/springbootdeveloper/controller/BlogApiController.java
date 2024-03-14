@@ -3,13 +3,14 @@ package me.eskim.springbootdeveloper.controller;
 import lombok.RequiredArgsConstructor;
 import me.eskim.springbootdeveloper.domain.Article;
 import me.eskim.springbootdeveloper.dto.AddArticleRequest;
+import me.eskim.springbootdeveloper.dto.ArticleResponse;
+import me.eskim.springbootdeveloper.dto.UpdateArticleRequest;
 import me.eskim.springbootdeveloper.service.BlogService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController // HTTP Reponse Body에 객체 데이터를 JSON 형식으로 반환하는 컨트롤러
 @RequiredArgsConstructor
@@ -29,5 +30,45 @@ public class BlogApiController {
                 .body(savedArticle);
     }
 
+    @GetMapping("/articles")
+    public ResponseEntity<List<ArticleResponse>> findAllArticles() {
 
+        List<ArticleResponse> articles =  blogService.findAll()
+                .stream() // stream()은 컬렉션에서만 사용함
+                .map(ArticleResponse::new)
+                .toList();
+
+        return ResponseEntity.ok()
+                .body(articles);
+    }
+
+    @GetMapping("/articles/{id}")
+    public ResponseEntity<ArticleResponse> findArticle(@PathVariable("id") Long id) {
+
+        Article article = blogService.findById(id);
+
+        return ResponseEntity.ok()
+                .body(new ArticleResponse(article));
+
+    }
+
+    @DeleteMapping("/articles/{id}")
+    public ResponseEntity<Void> deleteArticle(@PathVariable("id") Long id) {
+
+        blogService.delete(id);
+
+        return ResponseEntity.ok()
+                .build();
+    }
+
+    @PutMapping("/articles/{id}")
+    public ResponseEntity<Article> updateArticle(@PathVariable("id") Long id,
+                                                 @RequestBody UpdateArticleRequest request) {
+
+        Article article = blogService.update(id, request);
+
+        return ResponseEntity.ok()
+                .body(article);
+
+    }
 }
