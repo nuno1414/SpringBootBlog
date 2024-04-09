@@ -1,6 +1,7 @@
 package me.eskim.springbootdeveloper.service;
 
 import lombok.RequiredArgsConstructor;
+import me.eskim.springbootdeveloper.config.error.exception.ArticleNotFoundException;
 import me.eskim.springbootdeveloper.domain.Article;
 import me.eskim.springbootdeveloper.dto.AddArticleRequest;
 import me.eskim.springbootdeveloper.dto.UpdateArticleRequest;
@@ -31,7 +32,8 @@ public class BlogService {
     public Article findById(Long id) {
 
         return blogRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("not found : " + id)); // id로 조회 시 없으면 예외 발생
+                //.orElseThrow(() -> new IllegalArgumentException("not found : " + id)); // id로 조회 시 없으면 예외 발생
+                    .orElseThrow(ArticleNotFoundException::new); // id로 조회 시 없으면 ArticleNotFoundException 예외 발생
     }
 
     public void delete(Long id) {
